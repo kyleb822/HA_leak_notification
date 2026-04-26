@@ -1,0 +1,90 @@
+blueprint:
+  name: Leak Sensor Alert
+  description: >-
+    Sends push notifications to two mobile devices and an Alexa announcement
+    when a moisture sensor detects a leak. Triggers after 5 seconds of
+    sustained detection to avoid false positives.
+  domain: automation
+  input:
+    moisture_sensor:
+      name: Moisture Sensor
+      description: The binary moisture sensor to monitor.
+      selector:
+        entity:
+          domain: binary_sensor
+          device_class: moisture
+    push_title:
+      name: Push Notification Title
+      description: Title for the push notification (e.g. "⚠️ WATER LEAK - Washer").
+      selector:
+        text:
+    push_message:
+      name: Push Notification Message
+      description: Body of the push notification (e.g. "There is a leak behind the washer!").
+      selector:
+        text:
+    alexa_message:
+      name: Alexa Announcement Message
+      description: Message to announce on Alexa devices.
+      selector:
+        text:
+    notify_primary:
+      name: Primary Mobile Notify Service
+      description: >-
+        The notify service for the first mobile device
+        (e.g. notify.mobile_app_your_iphone). Find yours under
+        Developer Tools → Actions → search "notify.mobile_app".
+      selector:
+        text:
+    notify_secondary:
+      name: Secondary Mobile Notify Service
+      description: >-
+        The notify service for a second mobile device. Leave blank if you only
+        want one notification.
+      default: ""
+      selector:
+        text:
+    alexa_devices:
+      name: Alexa Device IDs
+      description: >-
+        List of Alexa Media Player device IDs to announce on. Find these in
+        Settings → Devices & Services → Alexa Media Player → device registry.
+      selector:
+        object:
+
+mode: single
+
+trigger:
+  - platform: state
+    entity_id: !input moisture_sensor
+    from: "off"
+    to: "on"
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+
+condition: []
+
+variables:
+  notify_secondary: !input notify_secondary
+
+action:
+  - parallel:
+      - action: !input notify_primary
+        data:
+          title: !input push_title
+          message: !input push_message
+      - if:
+          - condition: template
+            value_template: "{{ notify_secondary != '' }}"
+        then:
+          - action: !input notify_secondary
+            data:
+              title: !input push_title
+              message: !input push_message
+  - action: script.notify_alexa_script
+    data:
+      message: !input alexa_message
+      devices: !input alexa_devices
+      type: announce
