@@ -30,7 +30,7 @@ A Home Assistant automation blueprint that sends **simultaneous push notificatio
 
 Click the button below to import the blueprint directly into your Home Assistant instance:
 
-[![Import Blueprint](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fkyleb822%2FHA_leak_blueprint%2Fblob%2Fmain%2Fleak_sensor_alert.yaml)
+[![Import Blueprint](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fkyleb822%2FHA_leak_notification%2Fblob%2Fmain%2Fleak_sensor_alert.yaml)
 
 ### Option 2 — Manual install
 
